@@ -14,7 +14,12 @@ project is to provide a way for Python developers to control TriggerTrap devices
 
 ## Installation
 
-Well, use the source Luke. Releasing may come soon.
+Through pip:
+
+```
+pip install pytriggertrap
+```
+
 
 ### Non-python requirements
 
