@@ -2,3 +2,5 @@
 *.pyc
 *.un~
 *.swp
+MANIFEST
+/dist
