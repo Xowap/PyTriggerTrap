@@ -4,7 +4,7 @@ import wave
 import struct
 import os
 from typing import List, Tuple, Iterable, Union, BinaryIO, Text, Dict
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, DEVNULL
 
 from .utils import sine_wave, ChunkIterator
 
@@ -137,7 +137,7 @@ class TTController(object):
             '-f',
             'mp3',
             file_name,
-        ], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+        ], stdout=DEVNULL, stdin=PIPE, stderr=DEVNULL)
 
         for x in self.write_timelapse_waveform_wav(p.stdin, frames, period, pulses):
             yield x
