@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+# coding: utf-8
+
+import argparse
+from pytriggertrap import TTController
+from pytriggertrap.utils import progress
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    sp = parser.add_subparsers(help='Action to run', dest='action')
+
+    tlp = sp.add_parser('timelapse_file', help='Generate a MP3 file that produces a timelapse')
+    tlp.add_argument('-i', '--input-duration', type=float, help='Input duration in seconds (= '
+                                                                'how long are you going to '
+                                                                'capture your scene)')
+    tlp.add_argument('-o', '--output-duration', type=float, help='Output duration in seconds (= '
+                                                                 'how long video you are going '
+                                                                 'to produce will last)')
+    tlp.add_argument('-r', '--output-fps', type=float, default=30, help='Frame-rate of the video '
+                                                                        'you want to produce '
+                                                                        '(default\xa0=\xa030)')
+    tlp.add_argument('-p', '--pulses', type=int, default=3, help='Number of pulses sent to the '
+                                                                 'camera. Increase if your camera '
+                                                                 'is too slow. (default\xa0=\xa03)')
+    tlp.add_argument('-f', '--file', help='Name of the output MP3 file. It will be overwritten if '
+                                          'it already exists.')
+
+    trigger = sp.add_parser('trigger', help='Sends a trigger signal from this computer\'s audio')
+    trigger.add_argument('-p', '--pulses', type=int, default=3, help='Number of pulses sent to '
+                                                                     'the camera. Increase if your '
+                                                                     'camera is too slow. '
+                                                                     '(default\xa0=\xa03)')
+
+    args = parser.parse_args()
+    ttc = TTController()
+
+    if args.action == 'timelapse_file':
+        params = ttc.calc_timelapse_args(
+            args.input_duration,
+            args.output_duration,
+            args.output_fps,
+            args.pulses,
+        )
+        progress(ttc.write_timelapse_waveform_mp3(args.file, **params))
+    elif args.action == 'trigger':
+        ttc.trigger(args.pulses)
+
+
+if __name__ == '__main__':
+    main()
