@@ -39,6 +39,14 @@ class TTController(object):
         self.right_pulse = sine_wave(self.FREQ, self.DURATION, self.RATE)
         self.left_pulse = sine_wave(self.FREQ, self.DURATION, self.RATE, left_pulse_amplitude)
 
+        self.waveforms = {}
+
+    def _amp(self) -> float:
+        """
+        Computes the amplitude of the signal for the current channel width
+        """
+        return (2 ** (self.CHANNEL_WIDTH * 8 - 1)) - 1
+
     def make_pulse(self, n: int=3) -> Tuple[List[float], List[float]]:
         """
         Generates the waveform for the specified number of pulses. Each pulse lasts 50ms. The
@@ -173,3 +181,35 @@ class TTController(object):
             'period': p_i,
             'pulses': pulses,
         }
+
+    def _make_wave_object(self, pulses: int):
+        """
+        Generates a simpleaudio object for the number of pulses asked. Objects are cached for
+        performance reasons.
+
+        :param pulses: number of pulses to send 
+        """
+
+        if pulses not in self.waveforms:
+            from simpleaudio import WaveObject
+            amp = self._amp()
+            data = b''.join(struct.pack('h', int(amp * y))
+                            for x in zip(*self.make_pulse(pulses))
+                            for y in x)
+
+            self.waveforms[pulses] = WaveObject(data, 2, self.CHANNEL_WIDTH, self.RATE)
+
+        return self.waveforms[pulses]
+
+    def trigger(self, pulses: int=3) -> None:
+        """
+        Triggers the camera connected to this device's audio.
+
+        You can set the number of pulses to send if your camera is too slow, but 3 is a pretty
+        sensible default.
+
+        This function will block until the sound was played.
+
+        :param pulses: number of pulses to send 
+        """
+        self._make_wave_object(pulses).play().wait_done()

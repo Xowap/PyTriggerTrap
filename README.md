@@ -33,7 +33,7 @@ If you want to use the class, then read the code, it is documented via docstring
 
 ### The `pytt` tool
 
-You will be able to choose from several operations. So far there is only one.
+Different actions allow you to access the different features of the controller class.
 
 #### `timelapse_file`
 
@@ -63,3 +63,16 @@ pytt timelapse_file -i 21600 -o 30 -f timelapse.mp3
 ```
 
 See the command's built-in help for the options.
+
+#### `trigger`
+
+This will simply send a trigger to the camera. Just make sure that the TriggerTrap is connected to
+your computer's audio.
+
+Example
+
+```
+pytt trigger
+```
+
+See the command's built-in help for more options.

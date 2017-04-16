@@ -6,4 +6,5 @@
 #
 progressbar2==3.18.1
 python-utils==2.1.0       # via progressbar2
+simpleaudio==1.0.1
 six==1.10.0               # via python-utils

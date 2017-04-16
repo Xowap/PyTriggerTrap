@@ -26,6 +26,12 @@ def main():
     tlp.add_argument('-f', '--file', help='Name of the output MP3 file. It will be overwritten if '
                                           'it already exists.')
 
+    trigger = sp.add_parser('trigger', help='Sends a trigger signal from this computer\'s audio')
+    trigger.add_argument('-p', '--pulses', type=int, default=3, help='Number of pulses sent to '
+                                                                     'the camera. Increase if your '
+                                                                     'camera is too slow. '
+                                                                     '(default\xa0=\xa03)')
+
     args = parser.parse_args()
     ttc = TTController()
 
@@ -37,6 +43,8 @@ def main():
             args.pulses,
         )
         progress(ttc.write_timelapse_waveform_mp3(args.file, **params))
+    elif args.action == 'trigger':
+        ttc.trigger(args.pulses)
 
 
 if __name__ == '__main__':
